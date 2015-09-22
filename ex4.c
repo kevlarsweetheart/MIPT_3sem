@@ -12,7 +12,7 @@ void split(char *string, char *delimiters, char ***tokens, int *tokens_count)
 	char **buff_tokens = *tokens;
 	for (token = strtok(string, delimiters); token != NULL; token = strtok(NULL, delimiters))
 	{
-		if (*cnt == tokens_size)
+		if (cnt == tokens_size)
 		{
 			tokens_size = next_size;
 			next_size *= 2;
