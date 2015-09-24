@@ -1,0 +1,4 @@
+3
+5 echo Hello, world!
+8 ls -a
+10 pwd --version
