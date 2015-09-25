@@ -64,7 +64,6 @@ void get_tasks(FILE * file, int num, task ** tasks)
 		(*tasks)[i].command_args[j + 1] = NULL;
 	}
 	free(buff_args);
-
 }
 
 /* Executes the commands according to the formed list */
@@ -112,9 +111,9 @@ int main()
 	task *exec_tasks = (task *) malloc(max_cmd_num * sizeof(task));
 	get_tasks(infile, commands_num, &(exec_tasks));
 	printf("\n");
-	execute_tasks(&(exec_tasks), commands_num);
+	execute_tasks(&exec_tasks, commands_num);
 
-	destroy_tasks(&(exec_tasks), commands_num);
+	destroy_tasks(&exec_tasks, commands_num);
 	free(cmd_num);
 	free(file_name);
 	fclose(infile);

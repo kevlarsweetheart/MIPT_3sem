@@ -4,7 +4,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-void main(void)
+void main()
 {
 	int cnt, i, status;
 	pid_t ret_val;
@@ -19,5 +19,8 @@ void main(void)
 	for (i = 0; i < cnt; ++i) {
 		ret_val = wait(&status);
 		printf("returned child id: %d\nstatus: %d\n", ret_val, status);
+/*
+ * Ожидатся, что раз дочерний процесс сделал exit(i), то родительский выведет в качестве статуса завершения ребёнка именно i.
+ */
 	}
 }
