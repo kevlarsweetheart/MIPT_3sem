@@ -3,14 +3,10 @@
 #include <time.h>
 #include <omp.h>
 
-/*
- * Не здорово так писать. Если вы используете только пяток классов из std,
- * то пропишите явно
- * using std::vector;
- * using std::ofstream;
- * ...
- */
-using namespace std;
+using std::vector;
+using std::ifstream;
+using std::ofstream;
+using std::endl;
 
 /* The program finds the result of multiplication of two square matrixes
    using N threads. Size of each matrix is aliquot to N. The infile structure:
@@ -22,6 +18,10 @@ using namespace std;
 /*
  * Без openmp в один поток в 4,5 раза быстрее выходит. 
  * Так и задумывалось?
+ *
+ * - А это только на "маленьких" циклах такое происходит?
+ * Если нет, то это странно. Если же только на них, то вроде
+ * всё нормально: из-за синхронизации и прочих затрат параллелизма.
  */
 
 void init_matrix(vector<vector<int> > &matrix, int matrix_size)
