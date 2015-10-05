@@ -1,6 +1,5 @@
 #include <fstream>
 #include <vector>
-#include <omp.h>
 #include <time.h>
 
 using namespace std;
