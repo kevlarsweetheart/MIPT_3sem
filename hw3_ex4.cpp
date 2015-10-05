@@ -1,6 +1,5 @@
 #include <fstream>
 #include <vector>
-#include <string>
 #include <omp.h>
 #include <time.h>
 
