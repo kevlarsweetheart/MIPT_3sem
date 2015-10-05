@@ -1,7 +1,15 @@
 #include <fstream>
 #include <vector>
 #include <time.h>
+#include <omp.h>
 
+/*
+ * Не здорово так писать. Если вы используете только пяток классов из std,
+ * то пропишите явно
+ * using std::vector;
+ * using std::ofstream;
+ * ...
+ */
 using namespace std;
 
 /* The program finds the result of multiplication of two square matrixes
@@ -10,6 +18,11 @@ using namespace std;
  
    The outfile contains the result of multiplication and time in seconds
    the processor needed to execute the program */
+
+/*
+ * Без openmp в один поток в 4,5 раза быстрее выходит. 
+ * Так и задумывалось?
+ */
 
 void init_matrix(vector<vector<int> > &matrix, int matrix_size)
 {
@@ -35,7 +48,7 @@ int get_sum(vector<vector<int> > &a, vector<vector<int> > &b, int i, int j, int 
 
 void mult_matrixes(vector<vector<int> > &a, vector<vector<int> > &b, vector<vector<int> > &c, int matrix_size, int n_threads)
 {
-        #pragma omp parallel for num_threads(n_threads)
+  #pragma omp parallel for num_threads(n_threads)
 	for (int i = 0; i < matrix_size; ++i)
 		for (int j = 0; j < matrix_size; ++j)
 			c[i][j] = get_sum(a, b, i, j, matrix_size);
