@@ -5,9 +5,16 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+/*
+ * Чтобы не дублировать дважды объявление структур для пересылки, их можно вынести в отдельный 
+ * файл mytypes.h
+ * В коде подключить этот заголовочный файл: #include "mytypes.h"
+ * Потом при компиляции его дополнительно указывать и для клиента, и для сервера:
+ * gcc client.c mytypes.h -o client
+ */
+
 int main()
 {
-	
 	char path_name[] = "ex3_client.c";
 	struct mymsgbuf
 	{
