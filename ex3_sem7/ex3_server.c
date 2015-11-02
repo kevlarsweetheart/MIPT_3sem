@@ -4,14 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/sem.h>
+#include "my_types.h"
 
 const int max_clients = 2;
-
-struct thread_data
-{
-	int msqid, sem_id, x, y;
-	pid_t pid;
-};
 
 int init_queue(key_t key)
 {
@@ -51,11 +46,7 @@ void *create_thread(void *dummy)
 	data = *(struct thread_data *)dummy;
 	change_sem(data.sem_id, 1, 1);
 	change_sem(data.sem_id, 0, -1);
-	struct mymsgbuf2
-	{
-		long mtype;
-		int res;
-	} outdata;
+	struct mymsgbuf2 outdata;
 	outdata.mtype = data.pid;
 	outdata.res = data.x * data.y;
 	if (msgsnd(data.msqid, (struct msgbuf *) &outdata, sizeof outdata - sizeof(long), 0) < 0)
@@ -80,12 +71,7 @@ int main()
 	struct thread_data data;
 	data.msqid = init_queue(key);
 	data.sem_id = init_semaphore(key);
-	struct mymsgbuf
-	{
-		long mtype;
-		pid_t pid;;
-		int x, y;
-	} req_mes;
+	struct mymsgbuf req_mes;
 
 	change_sem(data.sem_id, 0, max_clients);
 
