@@ -35,20 +35,22 @@ int init_semaphore(key_t key)
 	return sem_id;
 }
 
-void change_sem(int sem_id, int val)
+void change_sem(int sem_id, int sem, int val)
 {
 	struct sembuf my_buf;
 	my_buf.sem_op = val;
-	my_buf.sem_num = 0;
+	my_buf.sem_num = sem;
 	my_buf.sem_flg = 0;
 	semop(sem_id, &my_buf, 1);
 }
 
 void *create_thread(void *dummy)
 {
+
 	struct thread_data data;
 	data = *(struct thread_data *)dummy;
-	change_sem(data.sem_id, -1);
+	change_sem(data.sem_id, 1, 1);
+	change_sem(data.sem_id, 0, -1);
 	struct mymsgbuf2
 	{
 		long mtype;
@@ -62,7 +64,7 @@ void *create_thread(void *dummy)
 		msgctl(data.msqid, IPC_RMID, (struct msqid_ds *)NULL);
 		exit(-1);
 	}
-	change_sem(data.sem_id, 1);
+	change_sem(data.sem_id, 0, 1);
 }
 
 int main()
@@ -81,11 +83,11 @@ int main()
 	struct mymsgbuf
 	{
 		long mtype;
-		pid_t pid;
+		pid_t pid;;
 		int x, y;
 	} req_mes;
 
-	change_sem(data.sem_id, max_clients);
+	change_sem(data.sem_id, 0, max_clients);
 
 	while (1)
 	{
@@ -98,16 +100,8 @@ int main()
 		data.x = req_mes.x;
 		data.y = req_mes.y;
 		pthread_t thread;
-    /*
-     * У вас главная нить и дочерние нити после создания живут своей жизнью.
-     * В общем случае ничего не препятствует ситуации, когда главная нить получит следующее сообщение и перезапишет структуру data, в то время как
-     * дочерняя ещё не успеет сохранить её в свою локальную переменную:
-     *  struct thread_data data;
-        data = *(struct thread_data *)dummy;
-       Вы можете спорить по этому поводу, но надо будет показывать, что в независимости от алгоритма планирования задач и прочих внешних факторов, такой ситуации не произойдёт.
-       Лучше же просто ввести дополнительный семафор, гарантирующий, что структура data в основной нити перезапишется только после того, как в ф-и нити она сохранится в локальную переменную.
-     */
 		int exec_res = pthread_create(&thread, (pthread_attr_t *)NULL, create_thread, &data);
+		change_sem(data.sem_id, 1, -1);
 	}
 	return 0;
 }
