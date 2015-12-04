@@ -7,6 +7,10 @@
 #include <string.h>
 #include <errno.h>
 
+/*
+ * Засчитано.
+ */
+
 void depth_search(char *direc_name, char *file, int depth)
 {
 	struct stat object;
@@ -32,6 +36,10 @@ void depth_search(char *direc_name, char *file, int depth)
 			else if (S_ISREG(object.st_mode) && strcmp(file, buf->d_name) == 0)
 			{
 				printf("Your file is found at %s\n", path);
+				/*
+				 * Лучше стараться писать ф-и, которые потенциально можно будет ещё где-то применить.
+				 * Если убивается текущий процесс, то это уже вряд ли можно будет где-то ещё использовать.
+				 */
 				exit(0);
 			}
 		}
