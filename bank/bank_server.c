@@ -10,6 +10,10 @@
 #include <pthread.h>
 #include <sys/sem.h>
 
+/*
+ * Засчитано. Посмотрите на замечания.
+ */
+
 const int initial_sum = 1000000;
 const int max_request = 12;
 const int port = 51000;
@@ -51,6 +55,12 @@ void *handle_request(void *data)
 	message = *(struct msg *)data;
 	change_sem(message.sem_id, 1, 1);
 	change_sem(message.sem_id, 0, -1);
+	/*
+	 * Критическая секция - это работа с глобальной переменной curr_sum.
+	 * Все остальное можно выполнять параллельно.
+	 * Чем меньше размер критической секции, тем лучше.
+	 * Т.е. lock следовало бы сделать, например, после int sum = atoi(recieved);
+	 */
 	int err_flag = read(message.sock, recieved, max_request);
 	if (err_flag < 0)
 	{
@@ -62,6 +72,10 @@ void *handle_request(void *data)
 	if (sum > 0)
 	{
 		curr_sum += sum;
+		/*
+		 * У вас 3 раза написан почти один и тот же кусок кода.
+		 * Это совсем не здорово.
+		 */
 		err_flag = write(message.sock, ok_msg, strlen(ok_msg) + 1);
 		if (err_flag < 0)
 		{
