@@ -15,6 +15,11 @@ void send_symbol(char symb, pid_t pid, int *sig, sigset_t *set)
     for (i = 0; i < bound; ++i)
     {
         bit = 1 & symb;
+	/*
+	 * Тернарный оператор - довольно удобная штука. Можно писать
+	 * kill(pid, bit ? SIGUSR1 : SIGUSR2);
+	 * вместо ваших 4х строк.
+	 */
         if (bit == 1)
             kill(pid, SIGUSR1);
         else
@@ -70,7 +75,7 @@ int main()
         int i, len = get_symbol(&sig, &set, pid);
         for (i = 0; i < len; ++i)
           msg[i] = get_symbol(&sig, &set, pid);
-         printf("Got the message!\n");
+         printf("Got the message %s!\n", msg);
          wait(NULL);
     }
     return 0;
